@@ -1,0 +1,1320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Bikini Bottom</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0a2f44, #1b6b8f, #48b5d0);
+            color: #fff;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+            padding-top: 70px;
+            transition: background 1s ease;
+        }
+
+        body.origin-view {
+            background: linear-gradient(135deg, #051a24, #0a3a4f, #1a4d66);
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a2f44;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #f0c45a;
+            border-radius: 5px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ffd966;
+        }
+
+        /* Navbar styles */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(10, 47, 68, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 0.8rem 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid rgba(240, 196, 90, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .navbar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #f0c45a;
+            text-decoration: none;
+        }
+
+        .navbar-logo i {
+            font-size: 2rem;
+            color: #48b5d0;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+
+        .nav-item {
+            position: relative;
+        }
+
+        .nav-link {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            padding: 0.5rem 0;
+            transition: color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .nav-link i {
+            font-size: 0.9rem;
+            color: #f0c45a;
+        }
+
+        .nav-link:hover {
+            color: #f0c45a;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #f0c45a;
+            transition: width 0.3s;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .hamburger {
+            display: none;
+            cursor: pointer;
+            background: transparent;
+            border: none;
+            color: #f0c45a;
+            font-size: 1.8rem;
+        }
+
+        .menu-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 999;
+        }
+
+        /* Sections */
+        .section {
+            min-height: 100vh;
+            padding: 3rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            z-index: 2;
+        }
+
+        /* Enhanced Animated bubbles  variation */
+        .bubbles {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            overflow: hidden;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            transition: opacity 1s ease;
+        }
+
+        .bubbles.origin-mode {
+            opacity: 0.4;
+            animation: slowBubbles 20s infinite;
+        }
+
+        @keyframes slowBubbles {
+            0% { filter: blur(0px); }
+            50% { filter: blur(2px); }
+            100% { filter: blur(0px); }
+        }
+
+        .bubble {
+            position: absolute;
+            bottom: -100px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: riseWithDrift 10s infinite ease-in;
+            filter: blur(calc(0.5px * var(--blur-multiplier, 1)));
+            opacity: calc(0.3 + 0.7 * var(--fade-factor, 1));
+        }
+
+        @keyframes riseWithDrift {
+            0% { 
+                bottom: -100px; 
+                transform: translateX(0) rotate(0deg);
+            }
+            25% {
+                transform: translateX(calc(10px * var(--drift-x, 1))) rotate(calc(10deg * var(--drift-rotate, 1)));
+            }
+            50% {
+                transform: translateX(calc(-10px * var(--drift-x, 1))) rotate(calc(-5deg * var(--drift-rotate, 1)));
+            }
+            75% {
+                transform: translateX(calc(5px * var(--drift-x, 1))) rotate(calc(8deg * var(--drift-rotate, 1)));
+            }
+            100% { 
+                bottom: 100vh; 
+                transform: translateX(calc(20px * var(--drift-x, 1))) rotate(calc(15deg * var(--drift-rotate, 1)));
+                opacity: 0;
+            }
+        }
+
+        /* Title styles */
+        h1 {
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            animation: glow 3s ease-in-out infinite;
+            text-align: center;
+            line-height: 1.2;
+        }
+        @keyframes glow {
+            0%, 100% { text-shadow: 0 0 20px #f0c45a; }
+            50% { text-shadow: 0 0 40px #ffaa00; }
+        }
+
+        h2 {
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            margin-bottom: 1.5rem;
+            background: linear-gradient(45deg, #f0c45a, #ffaa00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        .subhead {
+            font-size: clamp(1.2rem, 4vw, 1.8rem);
+            color: #a8e6ff;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        /* Enhanced text readability */
+        p {
+            font-size: 1rem;
+            line-height: 1.8;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        @media (min-width: 768px) {
+            p {
+                font-size: 1.1rem;
+                line-height: 1.9;
+            }
+        }
+
+        .text-block {
+            max-width: 750px;
+            margin: 0 auto;
+        }
+
+        /* Image cards */
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .image-card {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 30px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            aspect-ratio: 16/9;
+        }
+
+        .image-card:hover {
+            transform: scale(1.03) translateY(-5px);
+            box-shadow: 0 30px 40px rgba(255, 215, 0, 0.3);
+            border-color: #f0c45a;
+        }
+
+        .image-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s;
+        }
+
+        .image-card:hover img {
+            transform: scale(1.1);
+        }
+
+        /* Human Cost section - softened imagery */
+        .human-cost-card img {
+            filter: grayscale(40%) brightness(0.9) contrast(1.1);
+            transition: filter 0.5s ease;
+        }
+
+        .human-cost-card:hover img {
+            filter: grayscale(20%) brightness(1) contrast(1);
+        }
+
+        .human-cost-card .card-overlay {
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.3));
+        }
+
+        .card-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+            color: white;
+            padding: 1rem;
+            transform: translateY(100%);
+            transition: transform 0.4s;
+        }
+
+        .image-card:hover .card-overlay {
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .card-overlay {
+                transform: translateY(0);
+                background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+                padding: 0.8rem;
+            }
+        }
+
+        .float {
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Gradient cards */
+        .history-card {
+            background: linear-gradient(135deg, rgba(10, 47, 68, 0.95), rgba(27, 107, 143, 0.95));
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        @media (min-width: 768px) {
+            .history-card {
+                padding: 2.5rem;
+                margin: 2rem 0;
+            }
+        }
+
+        /* Radiation warning card */
+        .radiation-card {
+            background: linear-gradient(135deg, rgba(139, 0, 0, 0.2), rgba(255, 69, 0, 0.2));
+            border-left: 4px solid #ff4444;
+        }
+
+        .radiation-icon {
+            color: #ff4444;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Stats container */
+        .stats-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        @media (min-width: 640px) {
+            .stats-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .stats-container {
+                display: flex;
+                justify-content: space-around;
+                flex-wrap: wrap;
+                gap: 2rem;
+            }
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            transition: all 0.3s;
+        }
+
+        .stat-item:hover {
+            transform: scale(1.05);
+            border-color: #f0c45a;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #f0c45a;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Button */
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.8rem;
+            background: linear-gradient(45deg, #f0c45a, #ffaa00);
+            color: #0a2f44;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            margin-top: 1.5rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.3);
+        }
+
+        .cinematic-moment {
+            min-height: 100vh;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .cinematic-text {
+            font-size: clamp(2rem, 6vw, 4rem);
+            font-weight: 300;
+            color: #fff;
+            max-width: 900px;
+            margin: 0 auto;
+            opacity: 0;
+            animation: fadeInSlow 3s forwards;
+            animation-delay: 0.5s;
+            line-height: 1.4;
+            font-family: 'Crimson Text', serif;
+            letter-spacing: 2px;
+        }
+
+        .cinematic-subtext {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            color: #f0c45a;
+            margin-top: 2rem;
+            opacity: 0;
+            animation: fadeInSlow 3s forwards;
+            animation-delay: 2.5s;
+            font-style: italic;
+        }
+
+        @keyframes fadeInSlow {
+            0% { opacity: 0; transform: scale(0.95); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        
+        .creator-section {
+            background: linear-gradient(135deg, #1b6b8f, #0a2f44);
+            border-radius: 20px;
+            padding: 1.8rem;
+            margin: 1.5rem 0;
+        }
+
+        /* Flex layouts */
+        .flex-row {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .flex-row {
+                flex-direction: row;
+                gap: 2rem;
+            }
+        }
+
+        .flex-1 {
+            flex: 1;
+        }
+
+        /* Population breakdown */
+        .population-breakdown {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        @media (min-width: 640px) {
+            .population-breakdown {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .population-item {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 215, 0, 0.1);
+        }
+
+        .population-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #f0c45a;
+        }
+
+        .population-label {
+            font-size: 0.9rem;
+            color: #a8e6ff;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding: 1rem 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            transform: none;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(to bottom, #f0c45a, transparent);
+        }
+
+        @media (min-width: 768px) {
+            .timeline::before {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        }
+
+        .timeline-item {
+            display: flex;
+            flex-direction: column;
+            margin: 2rem 0;
+            position: relative;
+        }
+
+        @media (min-width: 768px) {
+            .timeline-item {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+        }
+
+        .timeline-content {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            transition: all 0.3s;
+            margin-left: 40px;
+        }
+
+        @media (min-width: 768px) {
+            .timeline-content {
+                width: 45%;
+                margin-left: 0;
+            }
+        }
+
+        .timeline-year {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #f0c45a;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Sources section */
+        .sources-section {
+            background: rgba(10, 47, 68, 0.8);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-top: 3rem;
+            border: 1px solid rgba(240, 196, 90, 0.3);
+        }
+
+        .sources-title {
+            color: #f0c45a;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .sources-list {
+            list-style: none;
+        }
+
+        .source-item {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border-left: 3px solid #f0c45a;
+            transition: all 0.3s;
+        }
+
+        .source-item:hover {
+            transform: translateX(5px);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .source-link {
+            color: #a8e6ff;
+            text-decoration: none;
+            word-break: break-all;
+            font-size: 0.9rem;
+        }
+
+        .source-link:hover {
+            color: #f0c45a;
+            text-decoration: underline;
+        }
+
+        .source-note {
+            color: #f0c45a;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            font-style: italic;
+        }
+
+        .personal-note {
+            background: linear-gradient(135deg, rgba(240, 196, 90, 0.1), rgba(255, 170, 0, 0.1));
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border: 1px solid #f0c45a;
+        }
+
+        .personal-note i {
+            color: #f0c45a;
+            margin-right: 0.5rem;
+        }
+
+        .ebsco-source {
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.1), rgba(41, 128, 185, 0.1));
+            border-left: 3px solid #3498db;
+        }
+
+        .ebsco-source .source-link {
+            color: #87CEEB;
+        }
+
+        .source-badge {
+            display: inline-block;
+            background: #f0c45a;
+            color: #0a2f44;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            body {
+                padding-top: 60px;
+            }
+
+            .navbar {
+                padding: 0.5rem 1rem;
+            }
+
+            .hamburger {
+                display: block;
+            }
+
+            .nav-menu {
+                position: fixed;
+                top: 60px;
+                right: -100%;
+                width: 80%;
+                max-width: 300px;
+                height: calc(100vh - 60px);
+                background: rgba(10, 47, 68, 0.98);
+                backdrop-filter: blur(10px);
+                flex-direction: column;
+                padding: 2rem 1.5rem;
+                gap: 1.5rem;
+                transition: right 0.3s ease;
+                box-shadow: -5px 0 20px rgba(0, 0, 0, 0.3);
+                z-index: 1000;
+            }
+
+            .nav-menu.active {
+                right: 0;
+            }
+
+            .menu-overlay.active {
+                display: block;
+            }
+
+            .cinematic-text {
+                font-size: 1.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 { font-size: 2.2rem; }
+            h2 { font-size: 1.8rem; }
+            .cinematic-text { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bubbles" id="bubbles"></div>
+    <div class="menu-overlay" id="menuOverlay"></div>
+
+    <!-- Navbar -->
+    <nav class="navbar" id="navbar">
+        <div class="navbar-container">
+            <a href="#home" class="navbar-logo">
+                <i class="fas fa-anchor"></i>
+                <span>Bikini Bottom</span>
+            </a>
+            <button class="hamburger" id="hamburger">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li class="nav-item"><a href="#spongebob-start" class="nav-link"><i class="fas fa-star"></i> SpongeBob</a></li>
+                <li class="nav-item"><a href="#bikini-bottom-city" class="nav-link"><i class="fas fa-city"></i> Bikini Bottom</a></li>
+                <li class="nav-item"><a href="#origin-bikini-atoll" class="nav-link"><i class="fas fa-history"></i> The Origin</a></li>
+                <li class="nav-item"><a href="#human-cost" class="nav-link"><i class="fas fa-heart"></i> Human Cost</a></li>
+                <li class="nav-item"><a href="#cinematic-moment" class="nav-link"><i class="fas fa-film"></i> The Pause</a></li>
+                <li class="nav-item"><a href="#where-now" class="nav-link"><i class="fas fa-map-marked-alt"></i> Where Now</a></li>
+                <li class="nav-item"><a href="#sources" class="nav-link"><i class="fas fa-book"></i> Sources</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Section 1:SpongeBob -->
+    <section class="section" id="spongebob-start">
+        <div class="container">
+            <div class="image-card float" style="max-width: 600px; margin: 0 auto;">
+                <img src="https://www.dropbox.com/scl/fi/cqd5hgbg2nuzpvnb82apz/Spongebob-character.jpg?rlkey=r62six01c5nsoyclo43dtvln8&st=xpz4ofze&raw=1" alt="SpongeBob Character">
+                <div class="card-overlay">
+                    <h3>SpongeBob SquarePants Crew </h3>
+                    <p>The cheerful sea sponge and  who lives in a pineapple under the sea and his friends</p>
+                </div>
+            </div>
+            
+            <div class="creator-section" style="margin-top: 2rem;">
+                <h2>Stephen Hillenburg's Vision</h2>
+                <p class="text-block">Stephen Hillenburg, a marine biologist turned animator, created SpongeBob SquarePants. He combined his love for the ocean with his passion for animation, naming the underwater city after the real Bikini Atoll - a place he learned about during his studies.</p>
+                <p class="text-block" style="margin-top: 1rem;">Little did we know that behind the cheerful name lay a profound and tragic history.</p>
+                <a href="#bikini-bottom-city" class="btn">Discover Bikini Bottom <i class="fas fa-arrow-down"></i></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 2: Bikini Bottom City -->
+    <section class="section" id="bikini-bottom-city">
+        <div class="container">
+            <h1>Bikini Bottom</h1>
+            <p class="subhead">The fictional underwater city</p>
+            
+            <div class="image-card" style="max-width: 800px; margin: 1.5rem auto;">
+                <img src="https://www.dropbox.com/scl/fi/2a64jqkmfy9bn2umnhkkx/Bikini-bottom.jpg?rlkey=oe0njdg79c4zcj1avgvzgeeby&st=f919h3qt&raw=1" alt="Bikini Bottom City">
+                <div class="card-overlay">
+                    <p>Founded in 1499 • Home to SpongeBob, Patrick, and friends</p>
+                </div>
+            </div>
+
+            <div style="background: rgba(255,255,255,0.1); backdrop-filter: blur(5px); border-radius: 20px; padding: 1.5rem; margin: 1.5rem 0;">
+                <p class="text-block"><i class="fas fa-map-pin" style="color: #f0c45a; margin-right: 0.5rem;"></i> Bikini Bottom is the bustling, populated town located on the floor of the Pacific Ocean, beneath the real-life Bikini Atoll. Founded in 1499, this unique city is known for its organic architecture, the famous Krusty Krab restaurant, and surrounding areas like Jellyfish Fields and Rock Bottom.</p>
+            </div>
+
+            <div class="image-grid">
+                <div class="image-card">
+                    <img src="https://www.dropbox.com/scl/fi/zrd61p0qq1vd8lhodgh41/kristy-krab.jpg?rlkey=3zg38tfkmf5ht9cr5rtj0qsve&st=owo68405&raw=1" alt="The Krusty Krab">
+                    <div class="card-overlay">
+                        <h3>The Krusty Krab</h3>
+                        <p>Home of the Krabby Patty</p>
+                    </div>
+                </div>
+                <div class="image-card">
+                    <img src="https://www.dropbox.com/scl/fi/o4d92dpr6tryt08erik97/Screenshot_20260216_113215_Google.jpg?rlkey=wmh3l5zu3mgamdg3ad851mho1&st=3m7sa826&raw=1" alt="Jellyfish Fields">
+                    <div class="card-overlay">
+                        <h3>Jellyfish Fields</h3>
+                        <p>Where SpongeBob goes jellyfishing</p>
+                    </div>
+                </div>
+            </div>
+
+            <a href="#origin-bikini-atoll" class="btn">The Real Story: Bikini Atoll <i class="fas fa-arrow-right"></i></a>
+        </div>
+    </section>
+
+    <!-- Section 3: The Origin - Bikini Atoll -->
+    <section class="section" id="origin-bikini-atoll">
+        <div class="container">
+            <h2>The Origin of Bikini Bottom</h2>
+            <p class="subhead">Bikini Atoll: The Real Place Behind the Name</p>
+
+            <div class="history-card">
+                <h3 style="color: #f0c45a; margin-bottom: 1rem;">What is Bikini Atoll?</h3>
+                <div class="flex-row">
+                    <div class="flex-1">
+                        <p class="text-block">Bikini Atoll is a small group of 23 islands in the Pacific Ocean, part of the Marshall Islands. For centuries, it was home to a thriving community with a rich culture deeply connected to the sea.</p>
+                        <div class="stats-container" style="margin: 1rem 0;">
+                            <div class="stat-item">
+                                <div class="stat-number">23</div>
+                                <div>Islands</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">~200</div>
+                                <div>Original Residents</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="image-card" style="flex: 1;">
+                        <img src="https://www.dropbox.com/scl/fi/uz6n9ex9e1xxoj0cxpnx1/Bikini-lagoon.jpg?rlkey=0xdwn5mzjctkite3tr3nb99fp&st=p7tmsmsd&raw=1" alt="Bikini Lagoon">
+                        <div class="card-overlay">
+                            <p>The beautiful lagoon before the tests</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="history-card">
+                <h3 style="color: #f0c45a; margin-bottom: 1rem;">The People of Bikini Atoll</h3>
+                <div class="flex-row">
+                    <div class="image-card" style="flex: 1;">
+                        <img src="https://www.dropbox.com/scl/fi/tnkdb37yacwaic6ksohtf/Bikini-map.jpg?rlkey=43j54yqzm37pys7arhczd43ol&st=xki8gqt3&raw=1" alt="Bikini Map">
+                        <div class="card-overlay">
+                            <p>Generations lived here in harmony</p>
+                        </div>
+                    </div>
+                    <div style="flex: 1;">
+                        <p class="text-block">Before the testing, Bikini Atoll was home to real people. Families lived there for generations, fishing in the abundant waters, farming the fertile land, and maintaining a strong cultural identity tied to their ancestral home.</p>
+                        <ul style="list-style: none; margin-top: 1rem;">
+                            <li><i class="fas fa-fish" style="color: #f0c45a; margin-right: 0.8rem;"></i> Skilled fishermen and navigators</li>
+                            <li><i class="fas fa-leaf" style="color: #f0c45a; margin-right: 0.8rem;"></i> Farmers of coconut, breadfruit, and pandanus</li>
+                            <li><i class="fas fa-drum" style="color: #f0c45a; margin-right: 0.8rem;"></i> Rich oral traditions and music</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="history-card">
+                <h3 style="color: #f0c45a; margin-bottom: 1rem;">What Happened</h3>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <div class="timeline-year">1946</div>
+                            <p>The U.S. government convinces the islanders to leave "temporarily" for nuclear testing.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <div class="timeline-year">1946-1958</div>
+                            <p>The U.S. conducts 23 nuclear tests at Bikini Atoll. The largest, Castle Bravo (1954), was 1,000 times more powerful than Hiroshima.</p>
+                            <img src="https://www.dropbox.com/scl/fi/8stmqk5awzvcf3rqibmpe/Nuclear-explosion.jpg?rlkey=bcidmmzn45ichteg8lx70ff85&st=gl6igfz8&raw=1" alt="Nuclear Explosion" style="width: 100%; border-radius: 10px; margin-top: 1rem;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cinematic-moment" id="cinematic-moment">
+        <div class="cinematic-text">
+            "They were told it was temporary."
+        </div>
+        <div class="cinematic-subtext">
+            That "temporary" exile became permanent.
+        </div>
+        <a href="#human-cost" class="btn" style="margin-top: 4rem; opacity: 0; animation: fadeInSlow 3s forwards; animation-delay: 3.5s;">
+            Continue <i class="fas fa-arrow-down"></i>
+        </a>
+    </section>
+
+    <!-- Section 4: Human Cost -->
+    <section class="section" id="human-cost">
+        <div class="container">
+            <h2>The Human Cost</h2>
+            <p class="subhead">The real price paid by real people</p>
+            
+            <div class="image-grid">
+                <div class="image-card human-cost-card">
+                    <img src="https://www.dropbox.com/scl/fi/znad3eg1mdl3ghsm96u9z/Bikini-victims.jpg?rlkey=mftky0exrlc65p5ife9w61zed&st=g6uv93lu&raw=1" alt="Bikini victims">
+                    <div class="card-overlay">
+                        <h3>Displacement & Suffering</h3>
+                        <p>Forced from their homes, the people suffered physically and culturally</p>
+                    </div>
+                </div>
+                <div class="image-card human-cost-card">
+                    <img src="https://www.dropbox.com/scl/fi/01kzvabtipqunkfl5lcfv/Ch8ld-affected-by-radiation.jpg?rlkey=8g43vw6bfvlslhaap6advbj9u&st=zb04cddd&raw=1" alt="Child affected by radiation">
+                    <div class="card-overlay">
+                        <h3>Generational Impact</h3>
+                        <p>Birth defects and health issues affected future generations</p>
+                    </div>
+                </div>
+                <div class="image-card human-cost-card">
+                    <img src="https://www.dropbox.com/scl/fi/pwbpcfnjcskhou7ila46v/Health-facility-at-bikini-atoll.jpg?rlkey=cub3e401jaqtuc3ube9qb4jcs&st=8y3zx712&raw=1" alt="Health facility">
+                    <div class="card-overlay">
+                        <h3>Ongoing Health Crisis</h3>
+                        <p>Decades of medical challenges and care</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="image-grid" style="margin-top: 1rem;">
+                <div class="image-card human-cost-card">
+                    <img src="https://www.dropbox.com/scl/fi/bfr3o5ih23g0ia181t9hn/Bikini-bottom-victim-2.jpg?rlkey=0ton7b8m01amf97mycfom8j1c&st=gpnb8zw7&raw=1" alt="Bikini victim 2">
+                    <div class="card-overlay">
+                        <h3>Cultural Loss</h3>
+                        <p>Generations displaced from their ancestral home</p>
+                    </div>
+                </div>
+                <div class="image-card human-cost-card">
+                    <img src="https://www.dropbox.com/scl/fi/znad3eg1mdl3ghsm96u9z/Bikini-victims.jpg?rlkey=mftky0exrlc65p5ife9w61zed&st=b77eqm3d&raw=1" alt="Bikini victims additional">
+                    <div class="card-overlay">
+                        <h3>Remembering Their Stories</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="history-card" style="margin-top: 2rem;">
+                <p class="text-block" style="font-size: 1.2rem; font-style: italic;">Radiation doesn't discriminate. It affects everyone - young and old, for generations. The islands their ancestors called home became places they could never safely return to.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 5: Where Are They Now? -->
+    <section class="section" id="where-now">
+        <div class="container">
+            <h2>Where Are They Now?</h2>
+            <p class="subhead">The Current Situation of Bikini Atoll</p>
+
+            <div class="history-card radiation-card">
+                <h3 style="color: #f0c45a; margin-bottom: 1rem;">
+                    <i class="fas fa-radiation radiation-icon" style="margin-right: 0.5rem;"></i>
+                    Current Status: Mostly Uninhabited
+                </h3>
+                <p class="text-block">Bikini Atoll is, for the most part, uninhabited due to dangerous levels of lingering radiation from 23 U.S. nuclear tests conducted between 1946 and 1958. Only a small number of caretakers, security staff, and occasional scientists or diving tourists live on or visit the islands.</p>
+                
+                <div class="stats-container" style="margin-top: 1.5rem;">
+                    <div class="stat-item">
+                        <div class="stat-number">1946-58</div>
+                        <div>Years of Testing</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">23</div>
+                        <div>Nuclear Tests</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="history-card">
+                <h3 style="color: #f0c45a; margin-bottom: 1.5rem;">Key Details About the Current Situation:</h3>
+                
+                <div class="flex-row" style="margin-bottom: 1.5rem;">
+                    <div class="flex-1">
+                        <h4 style="color: #f0c45a; margin-bottom: 0.5rem;">
+                            <i class="fas fa-exclamation-triangle" style="margin-right: 0.5rem;"></i>Radiation Risks
+                        </h4>
+                        <p class="text-block">While the islands are officially closed to permanent settlement, the radiation levels are not high enough to cause immediate death, but they are too high for living there safely, as local food (like coconuts) and groundwater are contaminated.</p>
+                    </div>
+                    <div class="flex-1">
+                        <h4 style="color: #f0c45a; margin-bottom: 0.5rem;">
+                            <i class="fas fa-undo-alt" style="margin-right: 0.5rem;"></i>Failed Returns
+                        </h4>
+                        <p class="text-block">A group of inhabitants moved back in the early 1970s but were removed again in 1978 after health studies showed they had high levels of radioactive cesium in their bodies.</p>
+                    </div>
+                </div>
+
+                <h4 style="color: #f0c45a; margin: 1.5rem 0 1rem;">
+                    <i class="fas fa-users" style="margin-right: 0.5rem;"></i>Population Displacement
+                </h4>
+                <p class="text-block">The majority of the Bikini people now live on Kili Island and Majuro, with a significant population also residing in the United States.</p>
+                
+                <div class="population-breakdown">
+                    <div class="population-item">
+                        <div class="population-number">~800</div>
+                        <div class="population-label">Kili Island</div>
+                    </div>
+                    <div class="population-item">
+                        <div class="population-number">~2,550</div>
+                        <div class="population-label">Majuro</div>
+                    </div>
+                    <div class="population-item">
+                        <div class="population-number">Significant</div>
+                        <div class="population-label">United States</div>
+                    </div>
+                </div>
+
+                <h4 style="color: #f0c45a; margin: 1.5rem 0 1rem;">
+                    <i class="fas fa-ship" style="margin-right: 0.5rem;"></i>Tourism
+                </h4>
+                <p class="text-block">The atoll is occasionally visited by scuba diving tourists and researchers, drawn by the shipwrecks from the nuclear tests and the unique marine life.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 6: Sources -->
+    <section class="section" id="sources">
+        <div class="container">
+            <h2>Sources & Further Reading</h2>
+            <p class="subhead">Where this information comes from</p>
+
+            <div class="personal-note">
+                <i class="fas fa-quote-left" style="font-size: 2rem; color: #f0c45a; opacity: 0.5;"></i>
+                <p class="text-block" style="font-size: 1.1rem; font-style: italic; margin: 1rem 0;">"After hearing about this history, I felt really bad for the islanders. They lost their homes, but I guess that's one of the sad storjew in past histories. It's a story to share, so I'm sharing this with you all. I hope these people have a new place to call home. I love exploring about history and sharing  stories for others to hear and learn."</p>
+                <p style="text-align: right; color: #f0c45a;">— Fatima Abdullahk</p>
+            </div>
+
+            <div class="sources-section">
+                <h3 class="sources-title">
+                    <i class="fas fa-wikipedia-w"></i> Wikipedia Sources
+                </h3>
+                
+                <ul class="sources-list">
+                    <li class="source-item">
+                        <a href="https://en.wikipedia.org/wiki/Bikini_Atoll" target="_blank" class="source-link">
+                            <i class="fas fa-external-link-alt" style="margin-right: 0.5rem; font-size: 0.8rem;"></i>
+                            Wikipedia: Bikini Atoll
+                        </a>
+                        <div class="source-note">Main article about the atoll, its history, and current status</div>
+                    </li>
+                    
+                    <li class="source-item">
+                        <a href="https://en.wikipedia.org/wiki/Nuclear_testing_at_Bikini_Atoll" target="_blank" class="source-link">
+                            <i class="fas fa-external-link-alt" style="margin-right: 0.5rem; font-size: 0.8rem;"></i>
+                            Wikipedia: Nuclear testing at Bikini Atoll
+                        </a>
+                        <div class="source-note">Detailed information about the 23 nuclear tests conducted between 1946-1958</div>
+                    </li>
+                    
+                    <li class="source-item">
+                        <a href="https://en.wikipedia.org/wiki/Bikini_Atoll#Displacement_and_return" target="_blank" class="source-link">
+                            <i class="fas fa-external-link-alt" style="margin-right: 0.5rem; font-size: 0.8rem;"></i>
+                            Wikipedia: Displacement and Return
+                        </a>
+                        <div class="source-note">Information about the failed return in the 1970s and ongoing displacement</div>
+                    </li>
+                    
+                    <li class="source-item">
+                        <a href="https://en.wikipedia.org/wiki/Bikini_Atoll#Current_status" target="_blank" class="source-link">
+                            <i class="fas fa-external-link-alt" style="margin-right: 0.5rem; font-size: 0.8rem;"></i>
+                            Wikipedia: Current Status
+                        </a>
+                        <div class="source-note">Details about radiation levels, population distribution, and tourism</div>
+                    </li>
+                    
+                    <li class="source-item">
+                        <a href="https://en.wikipedia.org/wiki/SpongeBob_SquarePants" target="_blank" class="source-link">
+                            <i class="fas fa-external-link-alt" style="margin-right: 0.5rem; font-size: 0.8rem;"></i>
+                            Wikipedia: SpongeBob SquarePants
+                        </a>
+                        <div class="source-note">Information about Stephen Hillenburg and the naming of Bikini Bottom</div>
+                    </li>
+                </ul>
+
+                <h3 class="sources-title" style="margin-top: 2rem;">
+                    <i class="fas fa-database"></i> Academic & Research Sources
+                </h3>
+
+                <ul class="sources-list">
+                    <li class="source-item ebsco-source">
+                        <a href="https://share.google/av2LVns8gfmnofVC7" target="_blank" class="source-link">
+                            <i class="fas fa-external-link-alt" style="margin-right: 0.5rem; font-size: 0.8rem;"></i>
+                            EBSCO: Bikini Atoll Research Database
+                            <span class="source-badge">EBSCO</span>
+                        </a>
+                        <div class="source-note">Academic research database containing scholarly articles, historical documents, and scientific studies about Bikini Atoll's nuclear testing history and its effects</div>
+                    </li>
+                </ul>
+
+                <div style="margin-top: 2rem; padding: 1rem; background: rgba(0,0,0,0.2); border-radius: 10px;">
+                    <p class="text-block" style="font-size: 0.9rem;">
+                        <i class="fas fa-info-circle" style="color: #f0c45a; margin-right: 0.5rem;"></i>
+                        This project is for educational purposes. All information has been sourced from Wikipedia, EBSCO academic database, and other public historical records. I encourage you to explore these sources to learn more about this history.
+                    </p>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 3rem;">
+                <a href="#spongebob-start" class="btn">
+                    <i class="fas fa-heart" style="margin-right: 0.5rem;"></i>
+                    Remember Bikini Atoll
+                </a>
+            </div>
+        </div>
+    </section>
+    <footer>
+      All rights reserved by StarBoy  <br>
+      <b><i>Worked by Ardit Ceno</b></i>
+      </footer>
+
+    <script>
+        // Create bubbles 
+        function createBubbles() {
+            const bubblesContainer = document.getElementById('bubbles');
+            for (let i = 0; i < 25; i++) {
+                const bubble = document.createElement('div');
+                bubble.classList.add('bubble');
+                
+                // Random size
+                const size = Math.random() * 60 + 10;
+                
+                
+                const driftX = (Math.random() * 2 - 1).toFixed(2);
+                const driftRotate = (Math.random() * 2 - 1).toFixed(2);
+                const blurMultiplier = Math.random() * 3;
+                const fadeFactor = Math.random();
+                
+                bubble.style.setProperty('--drift-x', driftX);
+                bubble.style.setProperty('--drift-rotate', driftRotate);
+                bubble.style.setProperty('--blur-multiplier', blurMultiplier);
+                bubble.style.setProperty('--fade-factor', fadeFactor);
+                
+                bubble.style.width = size + 'px';
+                bubble.style.height = size + 'px';
+                bubble.style.left = Math.random() * 100 + '%';
+                bubble.style.animationDelay = Math.random() * 10 + 's';
+                bubble.style.animationDuration = (Math.random() * 15 + 10) + 's';
+                
+                bubblesContainer.appendChild(bubble);
+            }
+        }
+        createBubbles();
+
+        
+        const originSection = document.getElementById('origin-bikini-atoll');
+        const bubbles = document.getElementById('bubbles');
+        const body = document.body;
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Darken gradient
+                    body.classList.add('origin-view');
+                    // Reduce bubble opacity 
+                    bubbles.classList.add('origin-mode');
+                } else {
+                    body.classList.remove('origin-view');
+                    bubbles.classList.remove('origin-mode');
+                }
+            });
+        }, { threshold: 0.3 });
+
+        observer.observe(originSection);
+
+        // Mobile menu functionality
+        const hamburger = document.getElementById('hamburger');
+        const navMenu = document.getElementById('navMenu');
+        const menuOverlay = document.getElementById('menuOverlay');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        function closeMenu() {
+            navMenu.classList.remove('active');
+            menuOverlay.classList.remove('active');
+            hamburger.innerHTML = '<i class="fas fa-bars"></i>';
+        }
+
+        function openMenu() {
+            navMenu.classList.add('active');
+            menuOverlay.classList.add('active');
+            hamburger.innerHTML = '<i class="fas fa-times"></i>';
+        }
+
+        hamburger.addEventListener('click', () => {
+            if (navMenu.classList.contains('active')) {
+                closeMenu();
+            } else {
+                openMenu();
+            }
+        });
+
+        menuOverlay.addEventListener('click', closeMenu);
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', closeMenu);
+        });
+
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768 && navMenu.classList.contains('active')) {
+                closeMenu();
+            }
+        });
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Intersection Observer for fade-in animations
+        const fadeObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = 1;
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '50px' });
+
+        document.querySelectorAll('.history-card, .image-card, .stat-item, .creator-section, .sources-section, .personal-note, .source-item').forEach(el => {
+            el.style.opacity = 0;
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'all 0.6s';
+            fadeObserver.observe(el);
+        });
+
+        // Navbar scroll effect
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) {
+                navbar.style.background = 'rgba(10, 47, 68, 0.98)';
+            } else {
+                navbar.style.background = 'rgba(10, 47, 68, 0.95)';
+            }
+        });
+
+        // Image error handling
+        document.querySelectorAll('img').forEach(img => {
+            img.onerror = function() {
+                this.style.display = 'none';
+                const parent = this.parentNode;
+                const placeholder = document.createElement('div');
+                placeholder.innerHTML = '<i class="fas fa-image" style="font-size: 2rem; color: #f0c45a;"></i><p style="font-size: 0.8rem;">Image unavailable</p>';
+                placeholder.style.cssText = 'width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background: rgba(0,0,0,0.3); border-radius: 20px;';
+                parent.appendChild(placeholder);
+            };
+        });
+
+        // Active nav link
+        window.addEventListener('scroll', () => {
+            let current = '';
+            const sections = document.querySelectorAll('.section, .cinematic-moment');
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (scrollY >= (sectionTop - 200)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.style.color = '#f0c45a';
+                } else {
+                    link.style.color = '';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
