@@ -54,7 +54,3 @@ The main goals of this project are:
 
 GitHub: https://github.com/ArditCeno  
 Website: https://arditceno.github.io/Bikini-Bottom/
-
----
-
-⭐ If you like this project, feel free to give it a star on GitHub!
